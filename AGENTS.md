@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep Exodus chapter data in a shared browser-safe module so chronology and scripture references have one source of truth.
+- Represent missing film assets explicitly; never substitute unrelated footage or still images for videos.
