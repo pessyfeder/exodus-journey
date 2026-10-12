@@ -35,8 +35,8 @@ function PlaguePage() {
             <blockquote className="reader-quote">“{plague.verse}”</blockquote>
             {plague.video ? <video controls src={plague.video} className="w-full mt-6" /> : <div className="reader-status"><Film size={16} /><span>Video unavailable — generation is awaiting workspace credits.</span></div>}
             <div className="reader-pagination">
-              {previous ? <Link to="/plagues/$slug" params={{ slug: chapterSlug(previous) }} className="inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeft size={16} /> {previous.title}</Link> : <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeft size={16} /> All chapters</Link>}
-              {next ? <Link to="/plagues/$slug" params={{ slug: chapterSlug(next) }} className="inline-flex items-center gap-2 text-sm">{next.title} <ArrowRight size={16} /></Link> : <Link to="/" className="inline-flex items-center gap-2 text-sm">Back to the journey <ArrowRight size={16} /></Link>}
+              {previous ? <Link to="/plagues/$slug" params={{ slug: chapterSlug(previous) }} className="inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeft size={16} /> Previous plague: {previous.title}</Link> : <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeft size={16} /> All chapters</Link>}
+              {next ? <Link to="/plagues/$slug" params={{ slug: chapterSlug(next) }} className="inline-flex items-center gap-2 text-sm">Next plague: {next.title} <ArrowRight size={16} /></Link> : <Link to="/" className="inline-flex items-center gap-2 text-sm">Back to the journey <ArrowRight size={16} /></Link>}
             </div>
           </div>
         </div>
