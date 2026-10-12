@@ -59,7 +59,7 @@ function Index() {
       </header>
       <main>
         <section className="hero" aria-labelledby="hero-title">
-          <img src={cover} width={1920} height={1088} alt="Moses and the Israelites walking between the parted waters of the sea" className="hero-image" fetchPriority="high" />
+          <img src={cover} width={1920} height={1088} alt="The Israelites walking between the parted waters of the sea" className="hero-image" fetchPriority="high" />
           <div className="hero-content">
             <div className="eyebrow"><span className="eyebrow-line" /> AN ANCIENT STORY. AN ENDURING HOPE.</div>
             <h1 id="hero-title">EXODUS<br /><em>From bondage<br />to freedom.</em></h1>
