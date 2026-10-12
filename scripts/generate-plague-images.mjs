@@ -11,17 +11,19 @@
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { plagues, style } from './plague-prompts.mjs';
+import { covers, plagues, style } from './plague-prompts.mjs';
 
-const outDir = join(dirname(fileURLToPath(import.meta.url)), '..', 'src', 'assets', 'plagues');
+const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const outDir = join(root, 'src', 'assets', 'plagues');
+const items = [...plagues, ...covers].map(item => ({ ...item, path: item.file ? join(root, item.file) : join(outDir, `${item.slug}.jpg`) }));
 const args = process.argv.slice(2);
 const dryRun = args.includes('--dry-run');
 const force = args.includes('--force');
 const slugs = args.filter(arg => !arg.startsWith('--'));
 
-const unknown = slugs.filter(slug => !plagues.some(plague => plague.slug === slug));
+const unknown = slugs.filter(slug => !items.some(item => item.slug === slug));
 if (unknown.length) {
-  console.error(`Unknown plague: ${unknown.join(', ')}\nValid: ${plagues.map(plague => plague.slug).join(', ')}`);
+  console.error(`Unknown plague: ${unknown.join(', ')}\nValid: ${items.map(item => item.slug).join(', ')}`);
   process.exit(1);
 }
 
@@ -35,7 +37,7 @@ const model = process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1';
 const quality = process.env.OPENAI_IMAGE_QUALITY || 'medium';
 mkdirSync(outDir, { recursive: true });
 
-const todo = plagues.filter(plague => (slugs.length === 0 || slugs.includes(plague.slug)) && (force || !existsSync(join(outDir, `${plague.slug}.jpg`))));
+const todo = items.filter(plague => (slugs.length === 0 ? !plague.file : slugs.includes(plague.slug)) && (force || !existsSync(plague.path)));
 console.log(`${todo.length} image(s) to generate with ${model} (${quality} quality): ${todo.map(plague => plague.slug).join(', ') || 'none'}`);
 if (dryRun || todo.length === 0) { process.exitCode = 0; } else {
 
@@ -52,7 +54,7 @@ for (const plague of todo) {
     if (!response.ok) throw new Error(body.error?.message ?? `HTTP ${response.status}`);
     const data = body.data?.[0]?.b64_json;
     if (!data) throw new Error('response had no image data');
-    writeFileSync(join(outDir, `${plague.slug}.jpg`), Buffer.from(data, 'base64'));
+    writeFileSync(plague.path, Buffer.from(data, 'base64'));
     console.log('saved');
   } catch (error) {
     failed++;
