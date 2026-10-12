@@ -37,7 +37,7 @@ mkdirSync(outDir, { recursive: true });
 
 const todo = plagues.filter(plague => (slugs.length === 0 || slugs.includes(plague.slug)) && (force || !existsSync(join(outDir, `${plague.slug}.jpg`))));
 console.log(`${todo.length} image(s) to generate with ${model} (${quality} quality): ${todo.map(plague => plague.slug).join(', ') || 'none'}`);
-if (dryRun || todo.length === 0) process.exit(0);
+if (dryRun || todo.length === 0) { process.exitCode = 0; } else {
 
 let failed = 0;
 for (const plague of todo) {
@@ -46,7 +46,7 @@ for (const plague of todo) {
     const response = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify({ model, prompt: `${style} ${plague.prompt}`, size: '1536x1024', quality, n: 1, output_format: 'jpeg' }),
+      body: JSON.stringify({ model, prompt: `${plague.style ?? style} ${plague.prompt}`, size: '1536x1024', quality, n: 1, output_format: 'jpeg' }),
     });
     const body = await response.json();
     if (!response.ok) throw new Error(body.error?.message ?? `HTTP ${response.status}`);
@@ -60,4 +60,5 @@ for (const plague of todo) {
   }
 }
 console.log(failed ? `Done with ${failed} failure(s); rerun to retry only the missing ones.` : 'Done. Review each image on its /plagues/<slug> page before committing.');
-process.exit(failed ? 1 : 0);
+process.exitCode = failed ? 1 : 0;
+}
