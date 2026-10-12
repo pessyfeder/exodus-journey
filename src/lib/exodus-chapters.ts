@@ -3,7 +3,7 @@ import plagues from '@/assets/plagues-cover.jpg';
 import exodus from '@/assets/exodus-cover.jpg';
 
 export type Chapter = { id: number; title: string; act: 'Bondage' | 'The plagues' | 'Deliverance'; reference: string; description: string; verse: string; image: string; video?: string };
-export const chapters: Chapter[] = [
+const baseChapters: Chapter[] = [
   { id: 1, title: 'In the house of bondage', act: 'Bondage', reference: 'Exodus 1:8–14', description: 'A new Pharaoh fears the growing people of Israel. Under cruel taskmasters, the Hebrews labor in brick and mortar, yet their people continue to multiply.', verse: 'And they made their lives bitter with hard bondage, in morter, and in brick, and in all manner of service in the field: all their service, wherein they made them serve, was with rigour.', image: bondage },
   { id: 2, title: 'Water into blood', act: 'The plagues', reference: 'Exodus 7:14–25', description: 'At God’s command, Aaron strikes the Nile with his rod. Its water turns to blood, the fish die, and the Egyptians cannot drink from the river.', verse: 'And all the waters that were in the river were turned to blood.', image: plagues },
   { id: 3, title: 'The frogs', act: 'The plagues', reference: 'Exodus 8:1–15', description: 'Frogs come up from the waters and fill the houses, bedrooms, ovens, and kneading troughs of Egypt. Pharaoh promises release, then hardens his heart when relief comes.', verse: 'And Aaron stretched out his hand over the waters of Egypt; and the frogs came up, and covered the land of Egypt.', image: plagues },
@@ -17,4 +17,10 @@ export const chapters: Chapter[] = [
   { id: 11, title: 'The firstborn & Passover', act: 'The plagues', reference: 'Exodus 11:1–12:32', description: 'Israel prepares the Passover and marks its doorposts with the lamb’s blood. At midnight, Egypt’s firstborn die. In grief, Pharaoh finally tells Moses and Aaron to take their people and go.', verse: 'And the blood shall be to you for a token upon the houses where ye are: and when I see the blood, I will pass over you.', image: plagues },
   { id: 12, title: 'A way through the sea', act: 'Deliverance', reference: 'Exodus 12:33–14:31', description: 'The Israelites leave Egypt. When Pharaoh’s army pursues, God parts the sea through Moses. Israel crosses on dry ground, and the returning waters overcome the pursuing army.', verse: 'And the children of Israel went into the midst of the sea upon the dry ground: and the waters were a wall unto them on their right hand, and on their left.', image: exodus },
 ];
+export const chapterSlug = (chapter: Chapter) => chapter.title.toLowerCase().replace(/^the /, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+// Optional per-chapter art: drop src/assets/plagues/<slug>.jpg (or .jpeg/.png/.webp); chapters without a file keep their act cover.
+const chapterArt = import.meta.glob<string>('/src/assets/plagues/*.{jpg,jpeg,png,webp}', { eager: true, import: 'default' });
+const artFor = (chapter: Chapter) => Object.entries(chapterArt).find(([path]) => path.split('/').pop()?.replace(/\.[^.]+$/, '') === chapterSlug(chapter))?.[1];
+export const chapters: Chapter[] = baseChapters.map(chapter => ({ ...chapter, image: artFor(chapter) ?? chapter.image }));
+export const plagueChapters = chapters.filter(chapter => chapter.act === 'The plagues');
 export const acts = ['All chapters', 'Bondage', 'The plagues', 'Deliverance'] as const;
