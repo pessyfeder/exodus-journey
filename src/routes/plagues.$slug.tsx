@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from '@tanstack/react-router';
-import { ArrowLeft, ArrowRight, BookOpen, Film, Waves } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpen, Waves } from 'lucide-react';
 import { chapterSlug, plagueChapters } from '@/lib/exodus-chapters';
 
 export const Route = createFileRoute('/plagues/$slug')({
@@ -33,7 +33,7 @@ function PlaguePage() {
             <div className="reader-reference">{plague.reference}</div>
             <p className="reader-description">{plague.description}</p>
             <blockquote className="reader-quote">“{plague.verse}”</blockquote>
-            {plague.video ? <video controls src={plague.video} className="w-full mt-6" /> : <div className="reader-status"><Film size={16} /><span>Video unavailable — generation is awaiting workspace credits.</span></div>}
+            {plague.video ? <video controls src={plague.video} className="w-full mt-6" /> : null}
             <div className="reader-pagination">
               {previous ? <Link to="/plagues/$slug" params={{ slug: chapterSlug(previous) }} className="inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeft size={16} /> Previous plague: {previous.title}</Link> : <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeft size={16} /> All chapters</Link>}
               {next ? <Link to="/plagues/$slug" params={{ slug: chapterSlug(next) }} className="inline-flex items-center gap-2 text-sm">Next plague: {next.title} <ArrowRight size={16} /></Link> : <Link to="/" className="inline-flex items-center gap-2 text-sm">Back to the journey <ArrowRight size={16} /></Link>}
