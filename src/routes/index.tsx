@@ -46,7 +46,7 @@ function Index() {
     document.addEventListener('keydown', handler);
     return () => { document.body.style.overflow = previousOverflow; document.removeEventListener('keydown', handler); lastFocus.current?.focus(); };
   }, [modalOpen]);
-  const openChapter = (item: Chapter) => { setChapter(item); setRead(current => current.includes(item.id) ? current : [...current, item.id]); };
+  const openChapter = (item: Chapter | undefined) => { if (!item) return; setChapter(item); setRead(current => current.includes(item.id) ? current : [...current, item.id]); };
   const showLibrary = () => library.current?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
   const filtered = chapters.filter(item => (filter === 'All chapters' || item.act === filter) && `${item.title} ${item.reference} ${item.description}`.toLowerCase().includes(search.toLowerCase()));
   const displayed = filter === 'All chapters' && !search && !expanded ? [chapters[0], chapters[1], chapters[11]].filter((item): item is Chapter => Boolean(item)) : filtered;
